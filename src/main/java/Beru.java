@@ -2,16 +2,23 @@ import java.util.Scanner;
 
 public class Beru {
 
-    private static final String LINE_SEPARATOR = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    private static final String LINE_SEPARATOR =
+            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    private static final int MAX_ARRAY_LEN = 100;
 
-    private static void printList(Task[] items, int itemsLength) {
+    private static void printList(Task[] tasks) {
         System.out.print(LINE_SEPARATOR);
         System.out.println("Here are the tasks in your list: ");
-        for (int i = 0; i < itemsLength; i++) {
+        for (int i = 0; i < Task.getTaskCount(); i++) {
             System.out.println((i + 1) +
-                    ".[" + items[i].getStatusIcon() + "] " + items[i].getDescription());
+                    ".[" + tasks[i].getStatusIcon() + "] " + tasks[i].getDescription());
         }
         System.out.print(LINE_SEPARATOR);
+    }
+
+    private static void printEmptyList() {
+        System.out.print(LINE_SEPARATOR +
+                "You have no items in your list yet!\n" + LINE_SEPARATOR);
     }
 
     private static void printTaskStatus(Task t) {
@@ -25,50 +32,96 @@ public class Beru {
         System.out.print(LINE_SEPARATOR);
     }
 
-    public static void main(String[] args) {
-        System.out.print(
-                LINE_SEPARATOR + "Hello! I'm Beru\n" +
-                "What can I do for you?\n" + LINE_SEPARATOR
-        );
-        Task[] tasks = new Task[100];
-        Scanner in = new Scanner(System.in);
-        String command = in.nextLine();
-        int i = 0;
-        int tasksArrIndex = 0;  // Index for arrays, starts from 0
-        while (!command.equals("bye")) {
-            if (command.equals("list")) {
-                printList(tasks, i);
-            } else if (command.startsWith("mark")) {
-                tasksArrIndex = Integer.parseInt(command.substring(5)) - 1;
-                if (tasksArrIndex >= i) {
-                    System.out.print(LINE_SEPARATOR + "No entry for task " +
-                            (tasksArrIndex + 1) + " yet! :(\n" + LINE_SEPARATOR);
-                } else if (tasks[tasksArrIndex].getIsDone()) {
-                    System.out.print(LINE_SEPARATOR +
-                            "Entry has already been marked as done!\n" + LINE_SEPARATOR);
-                } else {
-                    tasks[tasksArrIndex].setIsDone(true);
-                    printTaskStatus(tasks[tasksArrIndex]);
-                }
-            } else if (command.startsWith("unmark")) {
-                tasksArrIndex = Integer.parseInt(command.substring(7)) - 1;
-                if (tasksArrIndex >= i) {
-                    System.out.print(LINE_SEPARATOR + "No entry for task " +
-                            (tasksArrIndex + 1) + " yet! :(\n" + LINE_SEPARATOR);
-                } else if (!tasks[tasksArrIndex].getIsDone()) {
-                    System.out.print(LINE_SEPARATOR +
-                            "Entry is already unmarked!\n" + LINE_SEPARATOR);
-                } else {
-                    tasks[tasksArrIndex].setIsDone(false);
-                    printTaskStatus(tasks[tasksArrIndex]);
-                }
-            } else {
-                tasks[i++] = new Task(command);
-                System.out.print(LINE_SEPARATOR + "added: " + command + '\n' + LINE_SEPARATOR);
-            }
-            command = in.nextLine();
-        }
+    private static void printGreeting() {
+        System.out.print(LINE_SEPARATOR + "Hello! I'm Beru\n" +
+                        "What can I do for you?\n" + LINE_SEPARATOR);
+    }
+
+    private static void printGoodbye() {
         System.out.print(LINE_SEPARATOR +
                 "Bye... :(\nHope to see you again soon! >///<\n" + LINE_SEPARATOR);
+    }
+
+    private static void printNoEntryYet(int entryIndex) {
+        System.out.print(LINE_SEPARATOR + "No entry for task " +
+                entryIndex + " yet! :(\n" + LINE_SEPARATOR);
+    }
+
+    private static void printAlreadyDone() {
+        System.out.print(LINE_SEPARATOR +
+                "Entry has already been marked as done!\n" + LINE_SEPARATOR);
+    }
+
+    private static void printAlreadyUnmarked() {
+        System.out.print(LINE_SEPARATOR +
+                "Entry is already unmarked!\n" + LINE_SEPARATOR);
+    }
+
+    private static void handleMarkCommand(Task[] tasks, String[] words) {
+        int userEnteredEntry = Integer.parseInt(words[1]);
+        int userEnteredArrIndex = userEnteredEntry - 1;
+        if (userEnteredArrIndex >= Task.getTaskCount()) {
+            printNoEntryYet(userEnteredEntry);
+        } else if (tasks[userEnteredArrIndex].getIsDone()) {
+            printAlreadyDone();
+        } else {
+            tasks[userEnteredArrIndex].setIsDone(true);
+            printTaskStatus(tasks[userEnteredArrIndex]);
+        }
+    }
+
+    private static void handleUnmarkedCommand(Task[] tasks, String[] words) {
+        int userEnteredEntry = Integer.parseInt(words[1]);
+        int userEnteredArrIndex = userEnteredEntry - 1;
+        if (userEnteredArrIndex >= Task.getTaskCount()) {
+            printNoEntryYet(userEnteredEntry);
+        } else if (!tasks[userEnteredArrIndex].getIsDone()) {
+            printAlreadyUnmarked();
+        } else {
+            tasks[userEnteredArrIndex].setIsDone(false);
+            printTaskStatus(tasks[userEnteredArrIndex]);
+        }
+    }
+
+    private static void handleListCommand(Task[] tasks) {
+        if (Task.getTaskCount() == 0) {
+            printEmptyList();
+        } else {
+            printList(tasks);
+        }
+    }
+
+    private static void parseUserSentence(String sentence, Task[] tasks) {
+        String[] words = sentence.split(" ");
+        String command = words[0];
+        switch (command.toLowerCase()) {
+        case "list":
+            handleListCommand(tasks);
+            break;
+        case "mark":
+            handleMarkCommand(tasks, words);
+            break;
+        case "unmark":
+            handleUnmarkedCommand(tasks, words);
+            break;
+        default:
+            tasks[Task.getTaskCount()] = new Task(sentence);
+            System.out.print(LINE_SEPARATOR + "added: " + sentence + '\n' + LINE_SEPARATOR);
+            break;
+        }
+    }
+
+    public static void main(String[] args) {
+        printGreeting();
+        Task[] tasks = new Task[MAX_ARRAY_LEN];
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            String sentence = in.nextLine().trim();
+            if (sentence.equalsIgnoreCase("bye")) {
+                break;
+            }
+            parseUserSentence(sentence, tasks);
+        }
+        printGoodbye();
     }
 }
