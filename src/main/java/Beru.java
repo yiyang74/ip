@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Beru {
@@ -10,8 +11,7 @@ public class Beru {
         System.out.print(LINE_SEPARATOR);
         System.out.println("Here are the tasks in your list: ");
         for (int i = 0; i < Task.getTaskCount(); i++) {
-            System.out.println((i + 1) +
-                    ".[" + tasks[i].getStatusIcon() + "] " + tasks[i].getDescription());
+            System.out.println((i + 1) + "." + tasks[i].toString());
         }
         System.out.print(LINE_SEPARATOR);
     }
@@ -28,7 +28,7 @@ public class Beru {
         } else {
             System.out.println("OK, I've marked this task as not done yet:");
         }
-        System.out.println("  [" + t.getStatusIcon() + "] " + t.getDescription());
+        System.out.println("  " + t);
         System.out.print(LINE_SEPARATOR);
     }
 
@@ -55,6 +55,29 @@ public class Beru {
     private static void printAlreadyUnmarked() {
         System.out.print(LINE_SEPARATOR +
                 "Entry is already unmarked!\n" + LINE_SEPARATOR);
+    }
+
+    private static void printTaskEntry(Task[] tasks) {
+        System.out.print(LINE_SEPARATOR + "Got it! I've added this task:\n  " +
+                tasks[Task.getTaskCount() - 1] + "\nNow you have " +
+                Task.getTaskCount() + " tasks in the list.\n" + LINE_SEPARATOR);
+    }
+
+    private static void printInvalidDeadline() {
+        System.out.print(LINE_SEPARATOR +
+                "Invalid entry for Deadline!\nPlease include \"/by\"!\n" + LINE_SEPARATOR);
+    }
+
+    private static void printMissingEventFields() {
+        System.out.print(LINE_SEPARATOR +
+                "Invalid entry for Event!\nPlease include both \"/from\" and \"/to\"!\n" +
+                LINE_SEPARATOR);
+    }
+
+    private static void printInvalidEventFieldOrder() {
+        System.out.print(LINE_SEPARATOR +
+                "Invalid entry for Event!\nPlease enter \"/from\" before \"/to\"!\n" +
+                LINE_SEPARATOR);
     }
 
     private static void handleMarkCommand(Task[] tasks, String[] words) {
@@ -91,6 +114,61 @@ public class Beru {
         }
     }
 
+    private static void handleTodoCommand(Task[] tasks, String[] words) {
+        String description = combineWordsToSentence(words, 1, words.length);
+        tasks[Task.getTaskCount()] = new Todo(description);
+        printTaskEntry(tasks);
+    }
+
+    private static void handleDeadlineCommand(Task[] tasks, String[] words) {
+        int indexOfBy = -1;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equalsIgnoreCase("/by")) {
+                indexOfBy = i;
+                break;
+            }
+        }
+        if (indexOfBy == -1) {
+            printInvalidDeadline();
+            return;
+        }
+        String description = combineWordsToSentence(words, 1, indexOfBy);
+        String by = combineWordsToSentence(words, indexOfBy + 1, words.length);
+        tasks[Task.getTaskCount()] = new Deadline(by, description);
+        printTaskEntry(tasks);
+    }
+
+    private static void handleEventCommand(Task[] tasks, String[] words) {
+        int indexOfFrom = -1;
+        int indexOfTo = -1;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equalsIgnoreCase("/from")) {
+                indexOfFrom = i;
+            }
+            if (words[i].equalsIgnoreCase("/to")) {
+                indexOfTo = i;
+            }
+        }
+        if (indexOfFrom == -1 || indexOfTo == -1) {
+            printMissingEventFields();
+            return;
+        }
+        if (indexOfFrom > indexOfTo) {
+            printInvalidEventFieldOrder();
+            return;
+        }
+        String description = combineWordsToSentence(words, 1, indexOfFrom);
+        String from = combineWordsToSentence(words, indexOfFrom + 1, indexOfTo);
+        String to = combineWordsToSentence(words, indexOfTo + 1, words.length);
+        tasks[Task.getTaskCount()] = new Event(from, to, description);
+        printTaskEntry(tasks);
+    }
+
+    private static String combineWordsToSentence(String[] words, int start, int end) {
+        words = Arrays.copyOfRange(words, start, end);
+        return String.join(" ", words);
+    }
+
     private static void parseUserSentence(String sentence, Task[] tasks) {
         String[] words = sentence.split(" ");
         String command = words[0];
@@ -104,9 +182,14 @@ public class Beru {
         case "unmark":
             handleUnmarkedCommand(tasks, words);
             break;
-        default:
-            tasks[Task.getTaskCount()] = new Task(sentence);
-            System.out.print(LINE_SEPARATOR + "added: " + sentence + '\n' + LINE_SEPARATOR);
+        case "todo":
+            handleTodoCommand(tasks, words);
+            break;
+        case "deadline":
+            handleDeadlineCommand(tasks, words);
+            break;
+        case "event":
+            handleEventCommand(tasks, words);
             break;
         }
     }

@@ -1,10 +1,8 @@
 public class Task {
-    protected String description;
     protected boolean isDone;
     protected static int taskCount = 0;
 
-    public Task(String description) {
-        this.description = description;
+    public Task() {
         this.isDone = false;
         taskCount++;
     }
@@ -25,11 +23,8 @@ public class Task {
         this.isDone = isDone;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public String toString() {
+        return String.format("[%s]", getStatusIcon());
     }
 }
