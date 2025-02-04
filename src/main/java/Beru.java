@@ -11,7 +11,7 @@ public class Beru {
         System.out.print(LINE_SEPARATOR);
         System.out.println("Here are the tasks in your list: ");
         for (int i = 0; i < Task.getTaskCount(); i++) {
-            System.out.println((i + 1) + "." + tasks[i].toString());
+            System.out.println((i + 1) + "." + tasks[i]);
         }
         System.out.print(LINE_SEPARATOR);
     }
@@ -164,6 +164,12 @@ public class Beru {
         printTaskEntry(tasks);
     }
 
+    private static void handleInvalidCommand() {
+        System.out.print(LINE_SEPARATOR + "Not a valid command!\nPlease begin command with:\n" +
+                "\"list\", \"mark\", \"unmark\", \"todo\", \"deadline\" or \"event\".\n" +
+                LINE_SEPARATOR);
+    }
+
     private static String combineWordsToSentence(String[] words, int start, int end) {
         words = Arrays.copyOfRange(words, start, end);
         return String.join(" ", words);
@@ -190,6 +196,9 @@ public class Beru {
             break;
         case "event":
             handleEventCommand(tasks, words);
+            break;
+        default:
+            handleInvalidCommand();
             break;
         }
     }
