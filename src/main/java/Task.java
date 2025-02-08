@@ -1,9 +1,7 @@
-public class Task {
-    protected boolean isDone;
+public abstract class Task {
     protected static int taskCount = 0;
 
     public Task() {
-        this.isDone = false;
         taskCount++;
     }
 
@@ -11,20 +9,7 @@ public class Task {
         return taskCount;
     }
 
-    public String getStatusIcon() {
-        return (isDone ? "X" : " "); // mark done task with X
-    }
+    public abstract boolean getIsDone();
 
-    public boolean getIsDone() {
-        return isDone;
-    }
-
-    public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[ ][%s]", getStatusIcon());
-    }
+    public abstract void setIsDone(boolean isDone);
 }
