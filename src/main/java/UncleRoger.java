@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Beru {
+public class UncleRoger {
 
     private static final String LINE_SEPARATOR =
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
@@ -9,7 +9,7 @@ public class Beru {
 
     private static void printList(Task[] tasks) {
         System.out.print(LINE_SEPARATOR);
-        System.out.println("Here are the tasks in your list: ");
+        System.out.println("Come. Uncle Roger remind you what tasks you have: ");
         for (int i = 0; i < Task.getTaskCount(); i++) {
             System.out.println((i + 1) + "." + tasks[i]);
         }
@@ -18,66 +18,70 @@ public class Beru {
 
     private static void printEmptyList() {
         System.out.print(LINE_SEPARATOR +
-                "You have no items in your list yet!\n" + LINE_SEPARATOR);
+                "Haiya! You haven't added anything yet.\n" + LINE_SEPARATOR);
     }
 
     private static void printTaskStatus(Task t) {
         System.out.print(LINE_SEPARATOR);
         if (t.getIsDone()) {
-            System.out.println("Nice! I've marked this task as done:");
+            System.out.println("Uncle Roger help you mark this as done. Good Job.:");
         } else {
-            System.out.println("OK, I've marked this task as not done yet:");
+            System.out.println("Uncle Roger help you mark this as undone. Don't be lazy!:");
         }
         System.out.println("  " + t);
         System.out.print(LINE_SEPARATOR);
     }
 
     private static void printGreeting() {
-        System.out.print(LINE_SEPARATOR + "Hello! I'm Beru\n" +
-                        "What can I do for you?\n" + LINE_SEPARATOR);
+        System.out.print(LINE_SEPARATOR + "Hallo, I am Uncle Roger.\n" +
+                        "What you want me to do?\n" + LINE_SEPARATOR);
     }
 
     private static void printGoodbye() {
         System.out.print(LINE_SEPARATOR +
-                "Bye... :(\nHope to see you again soon! >///<\n" + LINE_SEPARATOR);
+                "Haiya...Goodbye.\nDon't like Uncle Roger just say.\n" + LINE_SEPARATOR);
     }
 
     private static void printNoEntryYet(int entryIndex) {
-        System.out.print(LINE_SEPARATOR + "No entry for task " +
-                entryIndex + " yet! :(\n" + LINE_SEPARATOR);
+        System.out.print(LINE_SEPARATOR + "Aiyoo...don't even have task " +
+                entryIndex + " yet!\nKan Cheong Spider!\n" + LINE_SEPARATOR);
     }
 
     private static void printAlreadyDone() {
         System.out.print(LINE_SEPARATOR +
-                "Entry has already been marked as done!\n" + LINE_SEPARATOR);
+                "Haiya...this task already mark as done.\n" +
+                "Go do something else\n" + LINE_SEPARATOR);
     }
 
     private static void printAlreadyUnmarked() {
         System.out.print(LINE_SEPARATOR +
-                "Entry is already unmarked!\n" + LINE_SEPARATOR);
+                "Haiya...this task is already unmarked.\n" +
+                "Stop procrastinating!\n" + LINE_SEPARATOR);
     }
 
     private static void printTaskEntry(Task[] tasks) {
-        System.out.print(LINE_SEPARATOR + "Got it! I've added this task:\n  " +
-                tasks[Task.getTaskCount() - 1] + "\nNow you have " +
-                Task.getTaskCount() + " tasks in the list.\n" + LINE_SEPARATOR);
+        System.out.print(LINE_SEPARATOR + "Ok. Uncle Roger add this task for you:\n  " +
+                tasks[Task.getTaskCount() - 1] + "\nDon't forget, now you have " +
+                Task.getTaskCount() + " tasks in your list.\n" + LINE_SEPARATOR);
     }
 
     private static void printInvalidDeadline() {
         System.out.print(LINE_SEPARATOR +
-                "Invalid entry for Deadline!\nPlease include \"/by\"!\n" + LINE_SEPARATOR);
+                "Haiya...invalid entry for Deadline!\n" +
+                "Go include \"/by\" in your entry!\n" + LINE_SEPARATOR);
     }
 
     private static void printMissingEventFields() {
         System.out.print(LINE_SEPARATOR +
-                "Invalid entry for Event!\nPlease include both \"/from\" and \"/to\"!\n" +
+                "Haiya...invalid entry for Event!\n" +
+                "Go include both \"/from\" and \"/to\" in your entry!\n" +
                 LINE_SEPARATOR);
     }
 
     private static void printInvalidEventFieldOrder() {
         System.out.print(LINE_SEPARATOR +
-                "Invalid entry for Event!\nPlease enter \"/from\" before \"/to\"!\n" +
-                LINE_SEPARATOR);
+                "Haiya...wrong entry order for Event!\n" +
+                "Go enter \"/from\" before \"/to\" in your entry!\n" + LINE_SEPARATOR);
     }
 
     private static void handleMarkCommand(Task[] tasks, String[] words) {
@@ -165,7 +169,8 @@ public class Beru {
     }
 
     private static void handleInvalidCommand() {
-        System.out.print(LINE_SEPARATOR + "Not a valid command!\nPlease begin command with:\n" +
+        System.out.print(LINE_SEPARATOR + "Haiya...Uncle Roger don't know what you typing!\n" +
+                "Uncle Roger remind you again. Begin your entry with:\n" +
                 "\"list\", \"mark\", \"unmark\", \"todo\", \"deadline\" or \"event\".\n" +
                 LINE_SEPARATOR);
     }
