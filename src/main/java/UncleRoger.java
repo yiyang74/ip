@@ -42,12 +42,12 @@ public class UncleRoger {
                 "Haiya...Goodbye.\nDon't like Uncle Roger just say.\n" + LINE_SEPARATOR);
     }
 
-    private static void printNoEntryYet(int entryIndex) {
-        System.out.print(LINE_SEPARATOR + "Aiyoo...don't even have task " +
-                entryIndex + " yet!\nKan Cheong Spider!\n" + LINE_SEPARATOR);
+    private static void printNoEntryYet() {
+        System.out.print(LINE_SEPARATOR + "Aiyoo...don't even have this task yet!\n" +
+                "Kan Cheong Spider!\n" + LINE_SEPARATOR);
     }
 
-    private static void printAlreadyDone() {
+    private static void printAlreadyMarked() {
         System.out.print(LINE_SEPARATOR +
                 "Haiya...this task already mark as done.\n" +
                 "Go do something else\n" + LINE_SEPARATOR);
@@ -84,47 +84,71 @@ public class UncleRoger {
                 "Go enter \"/from\" before \"/to\" in your entry!\n" + LINE_SEPARATOR);
     }
 
-    private static void handleMarkCommand(Task[] tasks, String[] words) {
+    private static void printNoDescription() {
+        System.out.print(LINE_SEPARATOR + "Haiya...your entry got no description!\n" +
+                "Go enter for Uncle Roger again!\n" + LINE_SEPARATOR);
+    }
+
+    private static void printNonPositiveIndex() {
+        System.out.print(LINE_SEPARATOR + "Haiya...Uncle Roger remind you again,\n" +
+                "task number entered must be more than 0!\n" + LINE_SEPARATOR);
+    }
+
+    private static void handleMarkCommand(Task[] tasks, String[] words)
+            throws NoEntryYetException, AlreadyMarkedException, NonPositiveIndexException {
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
-        if (userEnteredArrIndex >= Task.getTaskCount()) {
-            printNoEntryYet(userEnteredEntry);
+        if (userEnteredEntry <= 0) {
+            throw new NonPositiveIndexException();
+        } else if (userEnteredArrIndex >= Task.getTaskCount()) {
+            throw new NoEntryYetException();
         } else if (tasks[userEnteredArrIndex].getIsDone()) {
-            printAlreadyDone();
+            throw new AlreadyMarkedException();
         } else {
             tasks[userEnteredArrIndex].setIsDone(true);
             printTaskStatus(tasks[userEnteredArrIndex]);
         }
     }
 
-    private static void handleUnmarkedCommand(Task[] tasks, String[] words) {
+    private static void handleUnmarkedCommand(Task[] tasks, String[] words)
+            throws NoEntryYetException, AlreadyUnmarkedException, NonPositiveIndexException {
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
-        if (userEnteredArrIndex >= Task.getTaskCount()) {
-            printNoEntryYet(userEnteredEntry);
+        if (userEnteredEntry <= 0) {
+            throw new NonPositiveIndexException();
+        } else if (userEnteredArrIndex >= Task.getTaskCount()) {
+            throw new NoEntryYetException();
         } else if (!tasks[userEnteredArrIndex].getIsDone()) {
-            printAlreadyUnmarked();
+            throw new AlreadyUnmarkedException();
         } else {
             tasks[userEnteredArrIndex].setIsDone(false);
             printTaskStatus(tasks[userEnteredArrIndex]);
         }
     }
 
-    private static void handleListCommand(Task[] tasks) {
+    private static void handleListCommand(Task[] tasks) throws EmptyListException {
         if (Task.getTaskCount() == 0) {
-            printEmptyList();
+            throw new EmptyListException();
         } else {
             printList(tasks);
         }
     }
 
-    private static void handleTodoCommand(Task[] tasks, String[] words) {
+    private static void handleTodoCommand(Task[] tasks, String[] words)
+            throws NoDescriptionException {
+        if (words.length < 2) {
+            throw new NoDescriptionException();
+        }
         String description = combineWordsToSentence(words, 1, words.length);
         tasks[Task.getTaskCount()] = new Todo(description);
         printTaskEntry(tasks);
     }
 
-    private static void handleDeadlineCommand(Task[] tasks, String[] words) {
+    private static void handleDeadlineCommand(Task[] tasks, String[] words)
+            throws NoDescriptionException, InvalidDeadlineException {
+        if (words.length < 2) {
+            throw new NoDescriptionException();
+        }
         int indexOfBy = -1;
         for (int i = 0; i < words.length; i++) {
             if (words[i].equalsIgnoreCase("/by")) {
@@ -133,8 +157,7 @@ public class UncleRoger {
             }
         }
         if (indexOfBy == -1) {
-            printInvalidDeadline();
-            return;
+            throw new InvalidDeadlineException();
         }
         String description = combineWordsToSentence(words, 1, indexOfBy);
         String by = combineWordsToSentence(words, indexOfBy + 1, words.length);
@@ -142,7 +165,12 @@ public class UncleRoger {
         printTaskEntry(tasks);
     }
 
-    private static void handleEventCommand(Task[] tasks, String[] words) {
+    private static void handleEventCommand(Task[] tasks, String[] words)
+            throws NoDescriptionException, MissingEventFieldsException,
+            InvalidEventFieldOrderException {
+        if (words.length < 2) {
+            throw new NoDescriptionException();
+        }
         int indexOfFrom = -1;
         int indexOfTo = -1;
         for (int i = 0; i < words.length; i++) {
@@ -154,12 +182,10 @@ public class UncleRoger {
             }
         }
         if (indexOfFrom == -1 || indexOfTo == -1) {
-            printMissingEventFields();
-            return;
+            throw new MissingEventFieldsException();
         }
         if (indexOfFrom > indexOfTo) {
-            printInvalidEventFieldOrder();
-            return;
+            throw new InvalidEventFieldOrderException();
         }
         String description = combineWordsToSentence(words, 1, indexOfFrom);
         String from = combineWordsToSentence(words, indexOfFrom + 1, indexOfTo);
@@ -168,7 +194,7 @@ public class UncleRoger {
         printTaskEntry(tasks);
     }
 
-    private static void handleInvalidCommand() {
+    private static void printInvalidCommand() {
         System.out.print(LINE_SEPARATOR + "Haiya...Uncle Roger don't know what you typing!\n" +
                 "Uncle Roger remind you again. Begin your entry with:\n" +
                 "\"list\", \"mark\", \"unmark\", \"todo\", \"deadline\" or \"event\".\n" +
@@ -180,31 +206,69 @@ public class UncleRoger {
         return String.join(" ", words);
     }
 
-    private static void parseUserSentence(String sentence, Task[] tasks) {
+    private static void parseUserSentence(String sentence, Task[] tasks)
+            throws InvalidCommandException {
         String[] words = sentence.split(" ");
         String command = words[0];
         switch (command.toLowerCase()) {
         case "list":
-            handleListCommand(tasks);
+            try {
+                handleListCommand(tasks);
+            } catch (EmptyListException e) {
+                printEmptyList();
+            }
             break;
         case "mark":
-            handleMarkCommand(tasks, words);
+            try {
+                handleMarkCommand(tasks, words);
+            } catch (NoEntryYetException e) {
+                printNoEntryYet();
+            } catch (AlreadyMarkedException e) {
+                printAlreadyMarked();
+            } catch (NonPositiveIndexException e) {
+                printNonPositiveIndex();
+            }
             break;
         case "unmark":
-            handleUnmarkedCommand(tasks, words);
+            try {
+                handleUnmarkedCommand(tasks, words);
+            } catch (NoEntryYetException e) {
+                printNoEntryYet();
+            } catch (AlreadyUnmarkedException e) {
+                printAlreadyUnmarked();;
+            } catch (NonPositiveIndexException e) {
+                printNonPositiveIndex();
+            }
             break;
         case "todo":
-            handleTodoCommand(tasks, words);
+            try {
+                handleTodoCommand(tasks, words);
+            } catch (NoDescriptionException e) {
+                printNoDescription();
+            }
             break;
         case "deadline":
-            handleDeadlineCommand(tasks, words);
+            try {
+                handleDeadlineCommand(tasks, words);
+            } catch (NoDescriptionException e) {
+                printNoDescription();
+            } catch (InvalidDeadlineException e) {
+                printInvalidDeadline();
+            }
             break;
         case "event":
-            handleEventCommand(tasks, words);
+            try {
+                handleEventCommand(tasks, words);
+            } catch (NoDescriptionException e) {
+                printNoDescription();;
+            } catch (MissingEventFieldsException e) {
+                printMissingEventFields();
+            } catch (InvalidEventFieldOrderException e) {
+                printInvalidEventFieldOrder();
+            }
             break;
         default:
-            handleInvalidCommand();
-            break;
+            throw new InvalidCommandException();
         }
     }
 
@@ -217,7 +281,11 @@ public class UncleRoger {
             if (sentence.equalsIgnoreCase("bye")) {
                 break;
             }
-            parseUserSentence(sentence, tasks);
+            try {
+                parseUserSentence(sentence, tasks);
+            } catch (InvalidCommandException e) {
+                printInvalidCommand();
+            }
         }
         printGoodbye();
     }
