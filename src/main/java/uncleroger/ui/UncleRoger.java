@@ -1,5 +1,10 @@
+package uncleroger.ui;
+
+import uncleroger.exception.*;
+import uncleroger.task.*;
 import java.util.Arrays;
 import java.util.Scanner;
+
 
 public class UncleRoger {
 
@@ -24,11 +29,14 @@ public class UncleRoger {
     private static void printTaskStatus(Task t) {
         System.out.print(LINE_SEPARATOR);
         if (t.getIsDone()) {
-            System.out.println("Uncle Roger help you mark this as done. Good Job.:");
+            System.out.println("Uncle Roger help you mark this as done:");
+            System.out.println("  " + t);
+            System.out.println("Uncle Roger proud of you, good job.");
         } else {
-            System.out.println("Uncle Roger help you mark this as undone. Don't be lazy!:");
+            System.out.println("Uncle Roger help you mark this as undone:");
+            System.out.println("  " + t);
+            System.out.println("Uncle Roger disappointed in you, don't be lazy!:");
         }
-        System.out.println("  " + t);
         System.out.print(LINE_SEPARATOR);
     }
 
@@ -86,7 +94,7 @@ public class UncleRoger {
 
     private static void printNoDescription() {
         System.out.print(LINE_SEPARATOR + "Haiya...your entry got no description!\n" +
-                "Go enter for Uncle Roger again!\n" + LINE_SEPARATOR);
+                "Go re-type for Uncle Roger again!\n" + LINE_SEPARATOR);
     }
 
     private static void printNonPositiveIndex() {
@@ -235,7 +243,7 @@ public class UncleRoger {
             } catch (NoEntryYetException e) {
                 printNoEntryYet();
             } catch (AlreadyUnmarkedException e) {
-                printAlreadyUnmarked();;
+                printAlreadyUnmarked();
             } catch (NonPositiveIndexException e) {
                 printNonPositiveIndex();
             }
@@ -260,7 +268,7 @@ public class UncleRoger {
             try {
                 handleEventCommand(tasks, words);
             } catch (NoDescriptionException e) {
-                printNoDescription();;
+                printNoDescription();
             } catch (MissingEventFieldsException e) {
                 printMissingEventFields();
             } catch (InvalidEventFieldOrderException e) {

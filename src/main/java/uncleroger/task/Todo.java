@@ -1,3 +1,5 @@
+package uncleroger.task;
+
 public class Todo extends Task {
     protected boolean isDone;
     protected String description;

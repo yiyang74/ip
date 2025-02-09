@@ -1,3 +1,5 @@
+package uncleroger.task;
+
 public abstract class Task {
     protected static int taskCount = 0;
 
