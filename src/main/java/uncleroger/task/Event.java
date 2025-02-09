@@ -1,3 +1,5 @@
+package uncleroger.task;
+
 public class Event extends Todo {
     protected String from;
     protected String to;
