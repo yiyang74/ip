@@ -9,26 +9,29 @@ import java.util.ArrayList;
 
 public class UncleRoger {
 
-    private static final String LINE_SEPARATOR =
-            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
+    private static void printLineSeparator() {
+        System.out.print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    }
+
     private static void printList() {
-        System.out.print(LINE_SEPARATOR);
+        printLineSeparator();
         System.out.println("Come. Uncle Roger remind you what tasks you have: ");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }
-        System.out.print(LINE_SEPARATOR);
+        printLineSeparator();
     }
 
     private static void printEmptyList() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya! You haven't added anything yet.\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya! You haven't added anything yet.");
+        printLineSeparator();
     }
 
     private static void printTaskStatus(Task t) {
-        System.out.print(LINE_SEPARATOR);
+        printLineSeparator();
         if (t.getIsDone()) {
             System.out.println("Uncle Roger help you mark this as done:");
             System.out.println("  " + t);
@@ -38,69 +41,90 @@ public class UncleRoger {
             System.out.println("  " + t);
             System.out.println("Haiya...Uncle Roger disappointed in you, don't be lazy!:");
         }
-        System.out.print(LINE_SEPARATOR);
+        printLineSeparator();
+    }
+
+    private static void printTaskRemove(Task t) {
+        printLineSeparator();
+        System.out.println("Ok. Uncle Roger help you remove this task:");
+        System.out.println("  " + t);
+        System.out.println("Now you have " + (tasks.size() - 1) + " tasks in your list.");
+        printLineSeparator();
     }
 
     private static void printGreeting() {
-        System.out.print(LINE_SEPARATOR + "Hallo, I am Uncle Roger.\n" +
-                        "What you want me to do?\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Hallo, I am Uncle Roger.\nWhat you want me to do?");
+        printLineSeparator();
     }
 
     private static void printGoodbye() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...Goodbye.\nDon't like Uncle Roger just say.\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...Goodbye.\nDon't like Uncle Roger just say.");
+        printLineSeparator();
     }
 
     private static void printNoEntryYet() {
-        System.out.print(LINE_SEPARATOR + "Aiyoo...don't even have this task yet!\n" +
-                "Kan Cheong Spider!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Aiyoo...don't even have this task yet!\nKan Cheong Spider!");
+        printLineSeparator();
     }
 
     private static void printAlreadyMarked() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...this task already mark as done.\n" +
-                "Go do something else\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...this task already mark as done.\n" +
+                "Go do something else");
+        printLineSeparator();
     }
 
     private static void printAlreadyUnmarked() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...this task is already unmarked.\n" +
-                "Stop procrastinating!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...this task is already unmarked.\n" +
+                "Stop procrastinating!");
+        printLineSeparator();
     }
 
     private static void printTaskEntry() {
-        System.out.print(LINE_SEPARATOR + "Ok. Uncle Roger add this task for you:\n  " +
+        printLineSeparator();
+        System.out.println("Ok. Uncle Roger add this task for you:\n  " +
                 tasks.get(tasks.size() - 1) + "\nDon't forget, now you have " +
-                tasks.size() + " tasks in your list.\n" + LINE_SEPARATOR);
+                tasks.size() + " tasks in your list.");
+        printLineSeparator();
     }
 
     private static void printInvalidDeadline() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...invalid entry for Deadline!\n" +
-                "Go include \"/by\" in your entry!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...invalid entry for Deadline!\n" +
+                "Go include \"/by\" in your entry!");
+        printLineSeparator();
     }
 
     private static void printMissingEventFields() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...invalid entry for Event!\n" +
-                "Go include both \"/from\" and \"/to\" in your entry!\n" +
-                LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...invalid entry for Event!\n" +
+                "Go include both \"/from\" and \"/to\" in your entry!");
+        printLineSeparator();
     }
 
     private static void printInvalidEventFieldOrder() {
-        System.out.print(LINE_SEPARATOR +
-                "Haiya...wrong entry order for Event!\n" +
-                "Go enter \"/from\" before \"/to\" in your entry!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...wrong entry order for Event!\n" +
+                "Go enter \"/from\" before \"/to\" in your entry!");
+        printLineSeparator();
     }
 
     private static void printNoDescription() {
-        System.out.print(LINE_SEPARATOR + "Haiya...your entry got no description!\n" +
-                "Go re-type for Uncle Roger again!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...your entry got no description!\n" +
+                "Go re-type for Uncle Roger again!");
+        printLineSeparator();
     }
 
     private static void printNonPositiveIndex() {
-        System.out.print(LINE_SEPARATOR + "Haiya...Uncle Roger remind you again,\n" +
-                "task number entered must be more than 0!\n" + LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("Haiya...Uncle Roger remind you again,\n" +
+                "task number entered must be more than 0!");
+        printLineSeparator();
     }
 
     private static void handleMarkCommand(String[] words)
@@ -132,6 +156,20 @@ public class UncleRoger {
         } else {
             tasks.get(userEnteredArrIndex).setIsDone(false);
             printTaskStatus(tasks.get(userEnteredArrIndex));
+        }
+    }
+
+    private static void handleDeleteCommand(String[] words)
+            throws NonPositiveIndexException, NoEntryYetException {
+        int userEnteredEntry = Integer.parseInt(words[1]);
+        int userEnteredArrIndex = userEnteredEntry - 1;
+        if (userEnteredEntry <= 0) {
+            throw new NonPositiveIndexException();
+        } else if (userEnteredArrIndex >= tasks.size()) {
+            throw new NoEntryYetException();
+        } else {
+            printTaskRemove(tasks.get(userEnteredArrIndex));
+            tasks.remove(userEnteredArrIndex);
         }
     }
 
@@ -204,10 +242,13 @@ public class UncleRoger {
     }
 
     private static void printInvalidCommand() {
-        System.out.print(LINE_SEPARATOR + "Haiya...Uncle Roger don't know what you typing!\n" +
-                "Uncle Roger remind you again. Begin your entry with:\n" +
-                "\"list\", \"mark\", \"unmark\", \"todo\", \"deadline\" or \"event\".\n" +
-                LINE_SEPARATOR);
+        printLineSeparator();
+        System.out.println("""
+                Haiya...Uncle Roger don't know what you typing!
+                Uncle Roger remind you again. Begin your entry with:
+                "list", "mark", "unmark", "todo",
+                "deadline", "event" or "delete".""");
+        printLineSeparator();
     }
 
     private static String combineWordsToSentence(String[] words, int start, int end) {
@@ -274,6 +315,15 @@ public class UncleRoger {
                 printMissingEventFields();
             } catch (InvalidEventFieldOrderException e) {
                 printInvalidEventFieldOrder();
+            }
+            break;
+        case "delete":
+            try {
+                handleDeleteCommand(words);
+            } catch (NonPositiveIndexException e) {
+                printNonPositiveIndex();
+            } catch (NoEntryYetException e) {
+                printNoEntryYet();
             }
             break;
         default:
