@@ -8,6 +8,12 @@ public class Todo extends Task {
         this.description = description;
     }
 
+    public Todo(String description, boolean isDone) {
+        super();
+        this.description = description;
+        this.isDone = isDone;
+    }
+
     public String getStatusIcon() {
         return (isDone ? "X" : " "); // mark done task with X
     }
