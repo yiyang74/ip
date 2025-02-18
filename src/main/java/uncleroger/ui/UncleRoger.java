@@ -2,8 +2,13 @@ package uncleroger.ui;
 
 import uncleroger.exception.*;
 import uncleroger.task.*;
+
+import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class UncleRoger {
@@ -11,6 +16,7 @@ public class UncleRoger {
     private static final String LINE_SEPARATOR =
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     private static final int MAX_ARRAY_LEN = 100;
+    private static final String FILE_PATH = "data/UncleRoger.txt";
 
     private static void printList(Task[] tasks) {
         System.out.print(LINE_SEPARATOR);
@@ -102,8 +108,19 @@ public class UncleRoger {
                 "task number entered must be more than 0!\n" + LINE_SEPARATOR);
     }
 
+    private static void modifyStatusInData(int userEnteredArrIndex, boolean statusResult) {
+        String isDone;
+        if (statusResult) {
+            isDone = "1";
+        } else {
+            isDone = "0";
+        }
+        //to be completed
+    }
+
     private static void handleMarkCommand(Task[] tasks, String[] words)
-            throws NoEntryYetException, AlreadyMarkedException, NonPositiveIndexException {
+            throws NoEntryYetException, AlreadyMarkedException,
+            NonPositiveIndexException, IOException {
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
         if (userEnteredEntry <= 0) {
@@ -116,6 +133,7 @@ public class UncleRoger {
             tasks[userEnteredArrIndex].setIsDone(true);
             printTaskStatus(tasks[userEnteredArrIndex]);
         }
+        modifyStatusInData(userEnteredArrIndex, true);
     }
 
     private static void handleUnmarkedCommand(Task[] tasks, String[] words)
@@ -132,6 +150,8 @@ public class UncleRoger {
             tasks[userEnteredArrIndex].setIsDone(false);
             printTaskStatus(tasks[userEnteredArrIndex]);
         }
+        modifyStatusInData(userEnteredArrIndex, false);
+
     }
 
     private static void handleListCommand(Task[] tasks) throws EmptyListException {
@@ -142,6 +162,13 @@ public class UncleRoger {
         }
     }
 
+    private static void insertTodoToData(String description) throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String toAppend = "T 0 " + description + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
+    }
+
     private static void handleTodoCommand(Task[] tasks, String[] words)
             throws NoDescriptionException {
         if (words.length < 2) {
@@ -149,11 +176,24 @@ public class UncleRoger {
         }
         String description = combineWordsToSentence(words, 1, words.length);
         tasks[Task.getTaskCount()] = new Todo(description);
+        try {
+            insertTodoToData(description);
+        } catch (IOException e) {
+            System.err.println("Failed to enter Todo into Data: " + e.getMessage());
+        }
         printTaskEntry(tasks);
     }
 
+    private static void insertDeadlineToData(String description, String by)
+            throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String toAppend = "D 0 " + description + " - " + by + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
+    }
+
     private static void handleDeadlineCommand(Task[] tasks, String[] words)
-            throws NoDescriptionException, InvalidDeadlineException {
+            throws NoDescriptionException, InvalidDeadlineException, IOException {
         if (words.length < 2) {
             throw new NoDescriptionException();
         }
@@ -170,12 +210,21 @@ public class UncleRoger {
         String description = combineWordsToSentence(words, 1, indexOfBy);
         String by = combineWordsToSentence(words, indexOfBy + 1, words.length);
         tasks[Task.getTaskCount()] = new Deadline(by, description);
+        insertDeadlineToData(description, by);
         printTaskEntry(tasks);
+    }
+
+    private static void insertEventToData(String description, String from, String to)
+            throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String toAppend = "E 0 " + description + " - " + from + " - " + to + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
     }
 
     private static void handleEventCommand(Task[] tasks, String[] words)
             throws NoDescriptionException, MissingEventFieldsException,
-            InvalidEventFieldOrderException {
+            InvalidEventFieldOrderException, IOException {
         if (words.length < 2) {
             throw new NoDescriptionException();
         }
@@ -199,6 +248,7 @@ public class UncleRoger {
         String from = combineWordsToSentence(words, indexOfFrom + 1, indexOfTo);
         String to = combineWordsToSentence(words, indexOfTo + 1, words.length);
         tasks[Task.getTaskCount()] = new Event(from, to, description);
+        insertEventToData(description, from, to);
         printTaskEntry(tasks);
     }
 
@@ -235,6 +285,8 @@ public class UncleRoger {
                 printAlreadyMarked();
             } catch (NonPositiveIndexException e) {
                 printNonPositiveIndex();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
             break;
         case "unmark":
@@ -262,6 +314,8 @@ public class UncleRoger {
                 printNoDescription();
             } catch (InvalidDeadlineException e) {
                 printInvalidDeadline();
+            } catch (IOException e) {
+                System.err.println("Failed to enter Deadline into Data: " + e.getMessage());
             }
             break;
         case "event":
@@ -273,6 +327,8 @@ public class UncleRoger {
                 printMissingEventFields();
             } catch (InvalidEventFieldOrderException e) {
                 printInvalidEventFieldOrder();
+            } catch (IOException e) {
+                System.err.println("Failed to enter Event into Data: " + e.getMessage());
             }
             break;
         default:
@@ -280,9 +336,85 @@ public class UncleRoger {
         }
     }
 
+    private static void createDirectory() {
+        Path path = Paths.get("data");
+        if (Files.isDirectory(path)) {
+            return;
+        }
+        try {
+            Files.createDirectory(path);
+        } catch (IOException e) {
+            System.err.println("Failed to create directory: " + e.getMessage());
+        }
+    }
+
+    private static void createDataFile() {
+        File f = new File(FILE_PATH);
+        if (f.exists()) {
+            return;
+        }
+        try {
+            boolean isFileCreated = f.createNewFile();
+        } catch (IOException e) {
+            System.err.println("Failed to create file: " + e.getMessage());
+        }
+    }
+
+    private static void handleTodoData(String description, String status, Task[] tasks) {
+        boolean isDone = status.equals("1");
+        tasks[Task.getTaskCount()] = new Todo(description, isDone);
+    }
+
+    private static void handleDeadlineData(String description, String status, Task[] tasks) {
+        boolean isDone = status.equals("1");
+        String[] fields = description.split("-");
+        tasks[Task.getTaskCount()] = new Deadline(fields[1].trim(), fields[0].trim(), isDone);
+    }
+
+    private static void handleEventData(String description, String status, Task[] tasks) {
+        boolean isDone = status.equals("1");
+        String[] fields = description.split("-");
+        tasks[Task.getTaskCount()] = new Event(fields[1].trim(), fields[2].trim(),
+                fields[0].trim(), isDone);
+    }
+
+    private static void insertTaskFromData(String task, Task[] tasks) {
+        String[] words = task.split(" ", 3);
+        String command = words[0];
+        String status = words[1];
+        String description = words[2];
+        switch (command) {
+        case "T":
+            handleTodoData(description, status, tasks);
+            break;
+        case "D":
+            handleDeadlineData(description, status, tasks);
+            break;
+        case "E":
+            handleEventData(description, status, tasks);
+            break;
+        }
+    }
+
+    private static void loadDataFromFile(Task[] tasks) throws FileNotFoundException {
+        File f = new File("data/UncleRoger.txt");
+        Scanner s = new Scanner(f);
+        while (s.hasNext()) {
+            String task = s.nextLine();
+            insertTaskFromData(task, tasks);
+        }
+    }
+
     public static void main(String[] args) {
         printGreeting();
+        createDirectory();
+        createDataFile();
         Task[] tasks = new Task[MAX_ARRAY_LEN];
+        try {
+            loadDataFromFile(tasks);
+        } catch (FileNotFoundException e) {
+            System.out.println("UncleRoger.txt not found");
+        }
         Scanner in = new Scanner(System.in);
         while (true) {
             String sentence = in.nextLine().trim();

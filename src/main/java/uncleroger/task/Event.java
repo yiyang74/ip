@@ -10,6 +10,12 @@ public class Event extends Todo {
         this.to = to;
     }
 
+    public Event(String from, String to, String description, boolean isDone) {
+        super(description, isDone);
+        this.from = from;
+        this.to = to;
+    }
+
     @Override
     public String toString() {
         return String.format("[E][%s] %s (from: %s to: %s)",
