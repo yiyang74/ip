@@ -14,6 +14,10 @@ public class Todo extends Task {
         this.isDone = isDone;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public String getStatusIcon() {
         return (isDone ? "X" : " "); // mark done task with X
     }

@@ -13,6 +13,10 @@ public class Deadline extends Todo {
         this.by = by;
     }
 
+    public String getBy() {
+        return by;
+    }
+
     @Override
     public String toString() {
         return String.format("[D][%s] %s (by: %s)", getStatusIcon(), description, by);

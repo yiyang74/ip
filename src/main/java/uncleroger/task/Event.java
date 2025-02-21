@@ -16,6 +16,14 @@ public class Event extends Todo {
         this.to = to;
     }
 
+    public String getTo() {
+        return to;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
     @Override
     public String toString() {
         return String.format("[E][%s] %s (from: %s to: %s)",

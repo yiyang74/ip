@@ -201,13 +201,6 @@ public class UncleRoger {
         }
     }
 
-    private static void insertTodoToData(String description) throws IOException {
-        FileWriter fw = new FileWriter(FILE_PATH, true);
-        String toAppend = "T 0 " + description + System.lineSeparator();
-        fw.write(toAppend);
-        fw.close();
-    }
-
     private static void handleTodoCommand(String[] words)
             throws NoDescriptionException {
         if (words.length < 2) {
@@ -215,25 +208,11 @@ public class UncleRoger {
         }
         String description = combineWordsToSentence(words, 1, words.length);
         tasks.add(new Todo(description));
-        try {
-            insertTodoToData(description);
-        } catch (IOException e) {
-            System.err.println("Failed to enter Todo into Data: " + e.getMessage());
-        }
         printTaskEntry();
     }
 
-
-    private static void insertDeadlineToData(String description, String by)
-            throws IOException {
-        FileWriter fw = new FileWriter(FILE_PATH, true);
-        String toAppend = "D 0 " + description + " - " + by + System.lineSeparator();
-        fw.write(toAppend);
-        fw.close();
-    }
-
     private static void handleDeadlineCommand(String[] words)
-            throws NoDescriptionException, InvalidDeadlineException, IOException {
+            throws NoDescriptionException, InvalidDeadlineException {
         if (words.length < 2) {
             throw new NoDescriptionException();
         }
@@ -250,21 +229,12 @@ public class UncleRoger {
         String description = combineWordsToSentence(words, 1, indexOfBy);
         String by = combineWordsToSentence(words, indexOfBy + 1, words.length);
         tasks.add(new Deadline(by, description));
-        insertDeadlineToData(description, by);
         printTaskEntry();
-    }
-
-    private static void insertEventToData(String description, String from, String to)
-            throws IOException {
-        FileWriter fw = new FileWriter(FILE_PATH, true);
-        String toAppend = "E 0 " + description + " - " + from + " - " + to + System.lineSeparator();
-        fw.write(toAppend);
-        fw.close();
     }
 
     private static void handleEventCommand(String[] words)
             throws NoDescriptionException, MissingEventFieldsException,
-            InvalidEventFieldOrderException, IOException {
+            InvalidEventFieldOrderException {
         if (words.length < 2) {
             throw new NoDescriptionException();
         }
@@ -288,7 +258,6 @@ public class UncleRoger {
         String from = combineWordsToSentence(words, indexOfFrom + 1, indexOfTo);
         String to = combineWordsToSentence(words, indexOfTo + 1, words.length);
         tasks.add(new Event(from, to, description));
-        insertEventToData(description, from, to);
         printTaskEntry();
     }
 
@@ -357,8 +326,6 @@ public class UncleRoger {
                 printNoDescription();
             } catch (InvalidDeadlineException e) {
                 printInvalidDeadline();
-            } catch (IOException e) {
-                System.err.println("Failed to enter Deadline into Data: " + e.getMessage());
             }
             break;
         case "event":
@@ -370,8 +337,6 @@ public class UncleRoger {
                 printMissingEventFields();
             } catch (InvalidEventFieldOrderException e) {
                 printInvalidEventFieldOrder();
-            } catch (IOException e) {
-                System.err.println("Failed to enter Event into Data: " + e.getMessage());
             }
             break;
         case "delete":
@@ -448,7 +413,7 @@ public class UncleRoger {
         }
     }
 
-    private static void loadDataFromFile() throws FileNotFoundException {
+    private static void processDataFromFile() throws FileNotFoundException {
         File f = new File("data/UncleRoger.txt");
         Scanner s = new Scanner(f);
         while (s.hasNext()) {
@@ -457,12 +422,72 @@ public class UncleRoger {
         }
     }
 
+    private static void loadDeadlineToFile(Deadline task) throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String status = task.getIsDone() ? "1 " : "0 ";
+        String toAppend = "D "+ status + task.getDescription() +
+                " - " + task.getBy() + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
+    }
+
+    private static void loadEventToFile(Event task) throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String status = task.getIsDone() ? "1 " : "0 ";
+        String toAppend = "E "+ status + task.getDescription() + " - " +
+                task.getFrom() + " - " + task.getTo() + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
+    }
+
+    private static void loadTodoToFile(Todo task) throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH, true);
+        String status = task.getIsDone() ? "1 " : "0 ";
+        String toAppend = "T "+ status + task.getDescription() + System.lineSeparator();
+        fw.write(toAppend);
+        fw.close();
+    }
+
+    private static void clearFile() throws IOException {
+        FileWriter fw = new FileWriter(FILE_PATH);
+        fw.close();
+    }
+
+    private static void loadDataIntoFile() {
+        try {
+            clearFile();
+        } catch (IOException e) {
+            System.err.println("Failed to clear File: " + e.getMessage());
+        }
+        for (Task task : tasks) {
+            if (task instanceof Deadline) {
+                try {
+                    loadDeadlineToFile((Deadline) task);
+                } catch (IOException e) {
+                    System.err.println("Failed to enter Deadline into File: " + e.getMessage());
+                }
+            } else if (task instanceof Event) {
+                try {
+                    loadEventToFile((Event) task);
+                } catch (IOException e) {
+                    System.err.println("Failed to enter Event into File: " + e.getMessage());
+                }
+            } else {
+                try {
+                    loadTodoToFile((Todo) task);
+                } catch (IOException e) {
+                    System.err.println("Failed to enter Todo into File: " + e.getMessage());
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
         printGreeting();
         createDirectory();
         createDataFile();
         try {
-            loadDataFromFile();
+            processDataFromFile();
         } catch (FileNotFoundException e) {
             System.out.println("UncleRoger.txt not found");
         }
@@ -478,6 +503,7 @@ public class UncleRoger {
                 printInvalidCommand();
             }
         }
+        loadDataIntoFile();
         printGoodbye();
     }
 }
