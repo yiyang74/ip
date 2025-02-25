@@ -1,5 +1,15 @@
 package uncleroger.task;
 
+/**
+ * The Event class represents a task with a specific time range
+ * in the Uncle Roger task management application.
+ * <p>
+ * This class extends the Todo class and adds attributes for the start and end times of the event.
+ * It provides methods to get the start and end times and overrides the toString method to include
+ * these times in the task representation.
+ *
+ * @author Chen Yiyang
+ */
 public class Event extends Todo {
     protected String from;
     protected String to;
