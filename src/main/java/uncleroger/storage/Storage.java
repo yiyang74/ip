@@ -16,6 +16,17 @@ import java.util.Scanner;
 
 import static uncleroger.UncleRoger.tasks;
 
+/**
+ * The Storage class handles the persistence of tasks in the
+ * Uncle Roger task management application.
+ * <p>
+ * This class provides methods for creating directories and data files,
+ * processing tasks from a data file,
+ * and loading tasks into a data file. It ensures that tasks are saved and loaded correctly,
+ * maintaining the state of the task list across application runs.
+ *
+ * @author Chen Yiyang
+ */
 public class Storage {
 
     private static final String filePath = "data/UncleRoger.txt";
@@ -87,6 +98,12 @@ public class Storage {
         fw.close();
     }
 
+    /**
+     * Creates a directory named "data" if it does not already exist.
+     * <p>
+     * This method checks if a directory named "data" exists in the current working directory.
+     * If the directory does not exist, it attempts to create it. If the creation fails, it prints an error message.
+     */
     public static void createDirectory() {
         Path path = Paths.get("data");
         if (Files.isDirectory(path)) {
@@ -99,6 +116,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Creates a data file if it does not already exist.
+     * <p>
+     * This method checks if a file specified by the path stored in the `filePath` variable exists.
+     * If the file does not exist, it attempts to create it. If the creation fails, it prints an error message.
+     */
     public static void createDataFile() {
         File f = new File(filePath);
         if (f.exists()) {
@@ -111,6 +134,15 @@ public class Storage {
         }
     }
 
+    /**
+     * Processes tasks from the data file and inserts them into the task list.
+     * <p>
+     * This method reads tasks from the file named "UncleRoger.txt" located in the "data" directory.
+     * Each line in the file is assumed to represent a single task. The method reads each line and
+     * calls the `insertTaskFromData` method to insert the task into the task list.
+     *
+     * @throws FileNotFoundException If the file "data/UncleRoger.txt" does not exist.
+     */
     public static void processDataFromFile() throws FileNotFoundException {
         File f = new File("data/UncleRoger.txt");
         Scanner s = new Scanner(f);
@@ -120,6 +152,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads all tasks from the in-memory task list into a data file.
+     * <p>
+     * This method first clears the existing data file to ensure a fresh start.
+     * It then iterates through the list of tasks and writes each task to the file.
+     * The method handles different types of tasks (Deadline, Event, Todo) and calls
+     * the appropriate method to format and write each task to the file.
+     */
     public static void loadDataIntoFile() {
         try {
             clearFile();

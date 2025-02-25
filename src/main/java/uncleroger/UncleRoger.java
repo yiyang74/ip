@@ -9,6 +9,15 @@ import uncleroger.parser.Parser;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+/**
+ * The main class for the Uncle Roger task management application.
+ * <p>
+ * This class is responsible for initializing the application, processing user input,
+ * and managing the task list. It integrates with other classes such as
+ * `TextUi`, `Storage`, and `Parser` to provide a complete task management experience.
+ *
+ * @author Chen Yiyang
+ */
 public class UncleRoger {
 
     public static final ArrayList<Task> tasks = new ArrayList<>();

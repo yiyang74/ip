@@ -23,6 +23,17 @@ import java.util.Arrays;
 
 import static uncleroger.UncleRoger.tasks;
 
+/**
+ * The Parser class handles the parsing and execution of user commands
+ * in the Uncle Roger task management application.
+ * <p>
+ * This class provides methods for handling various commands
+ * such as marking tasks as done, unmarking tasks, deleting tasks,
+ * listing tasks, and adding new tasks (Todo, Deadline and Event).
+ * It ensures that user input is correctly interpreted and the appropriate actions are taken.
+ *
+ * @author Chen Yiyang
+ */
 public class Parser {
 
     private static String combineWordsToSentence(String[] words, int start, int end) {
@@ -167,6 +178,16 @@ public class Parser {
         TextUi.printTasksWithSubstring(tasksWithSubstring);
     }
 
+    /**
+     * Parses a user input sentence and executes the corresponding command.
+     * <p>
+     * This method takes a user input sentence, splits it into words, and identifies the command.
+     * It then delegates the execution to specific command handlers based on the command type.
+     * Each command handler is responsible for performing the necessary actions and handling any exceptions.
+     *
+     * @param sentence The user input sentence to be parsed and executed.
+     * @throws InvalidCommandException If the command is not recognized.
+     */
     public static void parseUserSentence(String sentence)
             throws InvalidCommandException {
         String[] words = sentence.split(" ");
