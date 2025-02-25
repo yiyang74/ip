@@ -2,6 +2,7 @@ package uncleroger.ui;
 
 import uncleroger.task.Task;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static uncleroger.UncleRoger.tasks;
@@ -51,7 +52,7 @@ public class TextUi {
      */
     public static void printEmptyList() {
         printLineSeparator();
-        System.out.println("Haiya! You haven't added anything yet.");
+        System.out.println("Haiya! You haven't added anything to your list yet.");
         printLineSeparator();
     }
 
@@ -205,6 +206,31 @@ public class TextUi {
             Uncle Roger remind you again. Begin your entry with:
             "list", "mark", "unmark", "todo",
             "deadline", "event" or "delete".""");
+        printLineSeparator();
+    }
+
+    public static void printEmptyFind() {
+        printLineSeparator();
+        System.out.println("Haiya! You need to tell Uncle Roger what to find.");
+        printLineSeparator();
+    }
+
+    public static void printCannotFind() {
+        printLineSeparator();
+        System.out.println("Your list don't have any tasks with that keyword!\n" +
+                "Waste Uncle Roger time haiya.");
+        printLineSeparator();
+    }
+
+    public static void printTasksWithSubstring(ArrayList<Task> tasksWithSubstring) {
+        printLineSeparator();
+        System.out.println("Uncle Roger found these tasks for you.\n" +
+                "Better say thank you to Uncle Roger.");
+        int i = 1;
+        for (Task task : tasksWithSubstring) {
+            System.out.println(i + ":" + task);
+            i++;
+        }
         printLineSeparator();
     }
 }

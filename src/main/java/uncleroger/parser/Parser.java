@@ -10,11 +10,15 @@ import uncleroger.exception.MissingEventFieldsException;
 import uncleroger.exception.NoDescriptionException;
 import uncleroger.exception.NoEntryYetException;
 import uncleroger.exception.NonPositiveIndexException;
+import uncleroger.exception.EmptyFindException;
+import uncleroger.exception.NoTaskWithSubstringException;
 import uncleroger.task.Deadline;
 import uncleroger.task.Event;
+import uncleroger.task.Task;
 import uncleroger.task.Todo;
 import uncleroger.ui.TextUi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static uncleroger.UncleRoger.tasks;
@@ -31,6 +35,11 @@ import static uncleroger.UncleRoger.tasks;
  * @author Chen Yiyang
  */
 public class Parser {
+
+    private static String combineWordsToSentence(String[] words, int start, int end) {
+        words = Arrays.copyOfRange(words, start, end);
+        return String.join(" ", words);
+    }
 
     private static void handleMarkCommand(String[] words)
             throws NoEntryYetException, AlreadyMarkedException,
@@ -147,9 +156,26 @@ public class Parser {
         TextUi.printTaskEntry();
     }
 
-    private static String combineWordsToSentence(String[] words, int start, int end) {
-        words = Arrays.copyOfRange(words, start, end);
-        return String.join(" ", words);
+    private static void handleFindCommand(String[] words)
+            throws EmptyListException, EmptyFindException, NoTaskWithSubstringException {
+        if (tasks.isEmpty()) {
+            throw new EmptyListException();
+        }
+        if (words.length == 1) {
+            throw new EmptyFindException();
+        }
+        String substring = combineWordsToSentence(words, 1, words.length).toLowerCase();
+        ArrayList<Task> tasksWithSubstring = new ArrayList<>();
+        for (Task task : tasks) {
+            String description = task.getDescription().toLowerCase();
+            if (description.contains(substring)) {
+                tasksWithSubstring.add(task);
+            }
+        }
+        if (tasksWithSubstring.isEmpty()) {
+            throw new NoTaskWithSubstringException();
+        }
+        TextUi.printTasksWithSubstring(tasksWithSubstring);
     }
 
     /**
@@ -230,6 +256,17 @@ public class Parser {
                 TextUi.printNonPositiveIndex();
             } catch (NoEntryYetException e) {
                 TextUi.printNoEntryYet();
+            }
+            break;
+        case "find":
+            try {
+                handleFindCommand(words);
+            } catch (EmptyListException e) {
+                TextUi.printEmptyList();
+            } catch (EmptyFindException e) {
+                TextUi.printEmptyFind();
+            } catch (NoTaskWithSubstringException e) {
+                TextUi.printCannotFind();
             }
             break;
         default:
