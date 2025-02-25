@@ -70,7 +70,7 @@ public class TextUi {
         } else {
             System.out.println("Uncle Roger help you mark this as undone:");
             System.out.println("  " + t);
-            System.out.println("Haiya...Uncle Roger disappointed in you, don't be lazy!:");
+            System.out.println("Haiya...Uncle Roger disappointed in you, don't be lazy!");
         }
         printLineSeparator();
     }
