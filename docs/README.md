@@ -5,6 +5,7 @@
 
 Uncle Roger is a simple and intuitive task management application designed to help you keep track of your tasks and deadlines. 
 Whether you're a student, a professional, or just someone looking to stay organized, Uncle Roger is here to assist you.
+
 ---
 ## Adding Tasks
 ### Adding a Todo Task
@@ -133,4 +134,5 @@ Don't like Uncle Roger just say.
 Uncle Roger is designed to make your task management experience as smooth and enjoyable as possible with a little attitude. 
 Whether you need to add tasks, mark them as done, or delete them, Uncle Roger is here to help. 
 Happy organizing!
+
 ---
