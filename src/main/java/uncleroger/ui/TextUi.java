@@ -209,12 +209,22 @@ public class TextUi {
         printLineSeparator();
     }
 
+    /**
+     * Prints a message indicating that the user needs to specify a keyword for searching tasks.
+     * <p>
+     * This method prints a message prompting the user to provide a keyword.
+     */
     public static void printEmptyFind() {
         printLineSeparator();
         System.out.println("Haiya! You need to tell Uncle Roger what to find.");
         printLineSeparator();
     }
 
+    /**
+     * Prints a message indicating that no tasks were found with the specified keyword.
+     * <p>
+     * This method prints a message indicating that no tasks match the keyword.
+     */
     public static void printCannotFind() {
         printLineSeparator();
         System.out.println("Your list don't have any tasks with that keyword!\n" +
@@ -222,6 +232,14 @@ public class TextUi {
         printLineSeparator();
     }
 
+    /**
+     * Prints a list of tasks that contain the specified keyword.
+     * <p>
+     * This method prints a message indicating that tasks have been found,
+     * and then lists each task with its index.
+     *
+     * @param tasksWithSubstring The list of tasks that contain the specified keyword.
+     */
     public static void printTasksWithSubstring(ArrayList<Task> tasksWithSubstring) {
         printLineSeparator();
         System.out.println("Uncle Roger found these tasks for you.\n" +
