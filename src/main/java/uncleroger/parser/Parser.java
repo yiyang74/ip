@@ -1,17 +1,6 @@
 package uncleroger.parser;
 
-import uncleroger.exception.AlreadyMarkedException;
-import uncleroger.exception.AlreadyUnmarkedException;
-import uncleroger.exception.EmptyListException;
-import uncleroger.exception.InvalidCommandException;
-import uncleroger.exception.InvalidDeadlineException;
-import uncleroger.exception.InvalidEventFieldOrderException;
-import uncleroger.exception.MissingEventFieldsException;
-import uncleroger.exception.NoDescriptionException;
-import uncleroger.exception.NoEntryYetException;
-import uncleroger.exception.NonPositiveIndexException;
-import uncleroger.exception.EmptyFindException;
-import uncleroger.exception.NoTaskWithSubstringException;
+import uncleroger.exception.*;
 import uncleroger.task.Deadline;
 import uncleroger.task.Event;
 import uncleroger.task.Task;
@@ -43,7 +32,10 @@ public class Parser {
 
     private static void handleMarkCommand(String[] words)
             throws NoEntryYetException, AlreadyMarkedException,
-            NonPositiveIndexException {
+            NonPositiveIndexException, NoIndexException {
+        if (words.length <= 1) {
+            throw new NoIndexException();
+        }
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
         if (userEnteredEntry <= 0) {
@@ -59,7 +51,11 @@ public class Parser {
     }
 
     private static void handleUnmarkedCommand(String[] words)
-            throws NoEntryYetException, AlreadyUnmarkedException, NonPositiveIndexException {
+            throws NoEntryYetException, AlreadyUnmarkedException,
+            NonPositiveIndexException, NoIndexException {
+        if (words.length <= 1) {
+            throw new NoIndexException();
+        }
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
         if (userEnteredEntry <= 0) {
@@ -75,7 +71,11 @@ public class Parser {
     }
 
     private static void handleDeleteCommand(String[] words)
-            throws NonPositiveIndexException, NoEntryYetException {
+            throws NonPositiveIndexException, NoEntryYetException,
+            NoIndexException {
+        if (words.length <= 1) {
+            throw new NoIndexException();
+        }
         int userEnteredEntry = Integer.parseInt(words[1]);
         int userEnteredArrIndex = userEnteredEntry - 1;
         if (userEnteredEntry <= 0) {
@@ -209,6 +209,8 @@ public class Parser {
                 TextUi.printAlreadyMarked();
             } catch (NonPositiveIndexException e) {
                 TextUi.printNonPositiveIndex();
+            } catch (NoIndexException e) {
+                TextUi.printNoIndex();
             }
             break;
         case "unmark":
@@ -220,6 +222,8 @@ public class Parser {
                 TextUi.printAlreadyUnmarked();
             } catch (NonPositiveIndexException e) {
                 TextUi.printNonPositiveIndex();
+            } catch (NoIndexException e) {
+                TextUi.printNoIndex();
             }
             break;
         case "todo":
@@ -256,6 +260,8 @@ public class Parser {
                 TextUi.printNonPositiveIndex();
             } catch (NoEntryYetException e) {
                 TextUi.printNoEntryYet();
+            } catch (NoIndexException e) {
+                TextUi.printNoIndex();
             }
             break;
         case "find":

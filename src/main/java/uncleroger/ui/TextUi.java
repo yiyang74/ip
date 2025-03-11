@@ -93,7 +93,16 @@ public class TextUi {
      */
     public static void printGreeting() {
         printLineSeparator();
-        System.out.println("Hallo, I am Uncle Roger.\nWhat you want me to do?");
+        System.out.println("Hallo, I am\n" +
+                " _   _            _       ______                      \n" +
+                        "| | | |          | |      | ___ \\                     \n" +
+                        "| | | |_ __   ___| | ___  | |_/ /___   __ _  ___ _ __ \n" +
+                        "| | | | '_ \\ / __| |/ _ \\ |    // _ \\ / _` |/ _ \\ '__|\n" +
+                        "| |_| | | | | (__| |  __/ | |\\ \\ (_) | (_| |  __/ |   \n" +
+                        " \\___/|_| |_|\\___|_|\\___| \\_| \\_\\___/ \\__, |\\___|_|   \n" +
+                        "                                       __/ |          \n" +
+                        "                                      |___/           \n" +
+                "What you want me to do?");
         printLineSeparator();
     }
 
@@ -193,6 +202,16 @@ public class TextUi {
         printLineSeparator();
         System.out.println("Haiya...Uncle Roger remind you again,\n" +
                 "task number entered must be more than 0!");
+        printLineSeparator();
+    }
+
+    /**
+     * Prints a message indicating that the task index is missing.
+     */
+    public static void printNoIndex() {
+        printLineSeparator();
+        System.out.println("Haiya...you never enter a number,\n" +
+                "waste Uncle Roger's time!");
         printLineSeparator();
     }
 

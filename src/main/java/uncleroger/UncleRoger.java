@@ -42,8 +42,8 @@ public class UncleRoger {
             } catch (InvalidCommandException e) {
                 TextUi.printInvalidCommand();
             }
+            Storage.loadDataIntoFile();
         }
-        Storage.loadDataIntoFile();
         TextUi.printGoodbye();
     }
 }
