@@ -53,7 +53,7 @@ public class Parser {
     private static void handleUnmarkedCommand(String[] words)
             throws NoEntryYetException, AlreadyUnmarkedException,
             NonPositiveIndexException, NoIndexException {
-        if (words.length <= 1) {
+        if (words.length < 2) {
             throw new NoIndexException();
         }
         int userEnteredEntry = Integer.parseInt(words[1]);
@@ -73,7 +73,7 @@ public class Parser {
     private static void handleDeleteCommand(String[] words)
             throws NonPositiveIndexException, NoEntryYetException,
             NoIndexException {
-        if (words.length <= 1) {
+        if (words.length < 2) {
             throw new NoIndexException();
         }
         int userEnteredEntry = Integer.parseInt(words[1]);
@@ -121,6 +121,9 @@ public class Parser {
         if (indexOfBy == -1) {
             throw new InvalidDeadlineException();
         }
+        if (indexOfBy + 1 == words.length) {
+            throw new NoByFieldException();
+        }
         String description = combineWordsToSentence(words, 1, indexOfBy);
         String by = combineWordsToSentence(words, indexOfBy + 1, words.length);
         tasks.add(new Deadline(by, description));
@@ -148,6 +151,12 @@ public class Parser {
         }
         if (indexOfFrom > indexOfTo) {
             throw new InvalidEventFieldOrderException();
+        }
+        if (indexOfFrom + 1 == indexOfTo) {
+            throw new NoFromFieldException();
+        }
+        if (indexOfTo + 1 == words.length) {
+            throw new NoToFieldException();
         }
         String description = combineWordsToSentence(words, 1, indexOfFrom);
         String from = combineWordsToSentence(words, indexOfFrom + 1, indexOfTo);
@@ -240,6 +249,8 @@ public class Parser {
                 TextUi.printNoDescription();
             } catch (InvalidDeadlineException e) {
                 TextUi.printInvalidDeadline();
+            } catch (NoByFieldException e) {
+                TextUi.printNoByFieldException();
             }
             break;
         case "event":
@@ -251,6 +262,10 @@ public class Parser {
                 TextUi.printMissingEventFields();
             } catch (InvalidEventFieldOrderException e) {
                 TextUi.printInvalidEventFieldOrder();
+            } catch (NoFromFieldException e) {
+                TextUi.printNoFromFieldException();
+            } catch (NoToFieldException e) {
+                TextUi.printNoToFieldException();
             }
             break;
         case "delete":

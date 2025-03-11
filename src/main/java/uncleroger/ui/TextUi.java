@@ -166,6 +166,36 @@ public class TextUi {
     }
 
     /**
+     * Prints a message indicating that the /by field is empty
+     */
+    public static void printNoByFieldException() {
+        printLineSeparator();
+        System.out.println("Haiya...let Uncle Roger remind you,\n" +
+                "please include something for after /by for Deadline task");
+        printLineSeparator();
+    }
+
+    /**
+     * Prints a message indicating that the /from field is empty
+     */
+    public static void printNoFromFieldException() {
+        printLineSeparator();
+        System.out.println("Haiya...let Uncle Roger remind you,\n" +
+                "please include something for after /from for Event task");
+        printLineSeparator();
+    }
+
+    /**
+     * Prints a message indicating that the /to field is empty
+     */
+    public static void printNoToFieldException() {
+        printLineSeparator();
+        System.out.println("Haiya...let Uncle Roger remind you,\n" +
+                "please include something for after /to for Event task");
+        printLineSeparator();
+    }
+
+    /**
      * Prints a message indicating that the event entry is missing fields.
      */
     public static void printMissingEventFields() {
