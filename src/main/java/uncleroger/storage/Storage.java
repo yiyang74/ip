@@ -29,7 +29,7 @@ import static uncleroger.UncleRoger.tasks;
  */
 public class Storage {
 
-    private static final String filePath = "data/UncleRoger.txt";
+    private static final String FILE_PATH = "data/UncleRoger.txt";
 
     private static void handleTodoData(String description, String status) {
         boolean isDone = status.equals("1");
@@ -68,7 +68,7 @@ public class Storage {
     }
 
     private static void loadDeadlineToFile(Deadline task) throws IOException {
-        FileWriter fw = new FileWriter(filePath, true);
+        FileWriter fw = new FileWriter(FILE_PATH, true);
         String status = task.getIsDone() ? "1 " : "0 ";
         String toAppend = "D "+ status + task.getDescription() +
                 " - " + task.getBy() + System.lineSeparator();
@@ -77,7 +77,7 @@ public class Storage {
     }
 
     private static void loadEventToFile(Event task) throws IOException {
-        FileWriter fw = new FileWriter(filePath, true);
+        FileWriter fw = new FileWriter(FILE_PATH, true);
         String status = task.getIsDone() ? "1 " : "0 ";
         String toAppend = "E "+ status + task.getDescription() + " - " +
                 task.getFrom() + " - " + task.getTo() + System.lineSeparator();
@@ -86,7 +86,7 @@ public class Storage {
     }
 
     private static void loadTodoToFile(Todo task) throws IOException {
-        FileWriter fw = new FileWriter(filePath, true);
+        FileWriter fw = new FileWriter(FILE_PATH, true);
         String status = task.getIsDone() ? "1 " : "0 ";
         String toAppend = "T "+ status + task.getDescription() + System.lineSeparator();
         fw.write(toAppend);
@@ -94,7 +94,7 @@ public class Storage {
     }
 
     private static void clearFile() throws IOException {
-        FileWriter fw = new FileWriter(filePath);
+        FileWriter fw = new FileWriter(FILE_PATH);
         fw.close();
     }
 
@@ -123,7 +123,7 @@ public class Storage {
      * If the file does not exist, it attempts to create it. If the creation fails, it prints an error message.
      */
     public static void createDataFile() {
-        File f = new File(filePath);
+        File f = new File(FILE_PATH);
         if (f.exists()) {
             return;
         }
